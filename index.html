@@ -317,6 +317,88 @@
             font-weight: 600;
         }
 
+
+
+        /* WALLET HUB */
+        .wallet-hub {
+            background: linear-gradient(145deg, rgba(99, 102, 241, 0.16), rgba(0, 255, 65, 0.08));
+            border: 1px solid rgba(129, 140, 248, 0.5);
+            border-radius: 24px;
+            padding: 32px;
+            margin-bottom: 24px;
+            box-shadow: 0 16px 30px rgba(0, 0, 0, 0.25);
+        }
+        .wallet-hub h2 {
+            font-size: 26px;
+            font-weight: 900;
+            margin-bottom: 10px;
+        }
+        .wallet-hub p {
+            color: #CBD5E1;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+        .wallet-actions {
+            display: grid;
+            grid-template-columns: 1.4fr auto auto;
+            gap: 12px;
+            align-items: center;
+        }
+        .wallet-input {
+            width: 100%;
+            padding: 14px 16px;
+            border-radius: 12px;
+            border: 1px solid rgba(148, 163, 184, 0.4);
+            background: rgba(0, 0, 0, 0.35);
+            color: #fff;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .wallet-input:focus {
+            border-color: #818CF8;
+            box-shadow: 0 0 0 3px rgba(129, 140, 248, 0.2);
+        }
+        .wallet-btn {
+            padding: 14px 18px;
+            border: none;
+            border-radius: 12px;
+            font-weight: 700;
+            color: #fff;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            white-space: nowrap;
+        }
+        .wallet-btn:hover { transform: translateY(-2px); }
+        .wallet-btn.primary {
+            background: linear-gradient(135deg, #6366F1, #4F46E5);
+            box-shadow: 0 8px 16px rgba(99, 102, 241, 0.35);
+        }
+        .wallet-btn.secondary {
+            background: linear-gradient(135deg, #8B5CF6, #6D28D9);
+            box-shadow: 0 8px 16px rgba(139, 92, 246, 0.35);
+        }
+        .wallet-meta {
+            margin-top: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .wallet-status {
+            font-size: 13px;
+            color: #A5B4FC;
+            min-height: 18px;
+        }
+        .wallet-status.error { color: #FCA5A5; }
+        .wallet-status.success { color: #86EFAC; }
+        .wallet-tip {
+            font-size: 12px;
+            color: #94A3B8;
+        }
+
         /* FOOTER */
         .footer { 
             text-align: center; 
@@ -346,6 +428,7 @@
             }
             .stat-col:last-child { display: none; }
             .data-value-grid { grid-template-columns: 1fr 1fr; }
+            .wallet-actions { grid-template-columns: 1fr; }
         }
 
         .live-indicator {
@@ -452,6 +535,32 @@
             </p>
         </div>
 
+
+
+        <!-- Wallet Hub -->
+        <div class="wallet-hub">
+            <h2>💳 Claim-Ready Wallet Setup</h2>
+            <p>Add your Solana wallet manually or connect Phantom in one click so you are ready for rewards and future airdrops.</p>
+            <div class="wallet-actions">
+                <input
+                    id="walletAddressInput"
+                    class="wallet-input"
+                    type="text"
+                    inputmode="text"
+                    spellcheck="false"
+                    autocomplete="off"
+                    placeholder="Paste your Solana wallet address (Base58)"
+                    aria-label="Wallet address"
+                >
+                <button id="saveWalletBtn" class="wallet-btn primary" type="button">Save Wallet</button>
+                <button id="connectPhantomBtn" class="wallet-btn secondary" type="button">Connect Phantom</button>
+            </div>
+            <div class="wallet-meta">
+                <div id="walletStatus" class="wallet-status">No wallet linked yet.</div>
+                <a class="wallet-tip" href="https://phantom.app/" target="_blank" rel="noopener noreferrer">Need Phantom? Install the official wallet ↗</a>
+            </div>
+        </div>
+
         <!-- Data Value Showcase -->
         <div class="data-showcase">
             <div class="data-showcase-title">💰 Your Data Powers Billion-Dollar Companies</div>
@@ -504,10 +613,17 @@
         <div class="footer">
             <p>© 2026 HIX Protocol • Training Tomorrow's Robots Today 🤖</p>
             <div style="margin-top: 10px;">
-                <a href="https://twitter.com/hixprotocol" target="_blank">Twitter</a>
-                <a href="https://discord.gg/hixprotocol" target="_blank">Discord</a>
-                <a href="https://t.me/hixprotocol" target="_blank">Telegram</a>
+                <a href="https://twitter.com/hixprotocol" target="_blank" rel="noopener noreferrer">Twitter</a>
+                <a href="https://discord.gg/hixprotocol" target="_blank" rel="noopener noreferrer">Discord</a>
+                <a href="https://t.me/hixprotocol" target="_blank" rel="noopener noreferrer">Telegram</a>
             </div>
+            <div style="margin-top: 12px;">
+                <a href="/README.md" target="_blank" rel="noopener noreferrer">Docs</a>
+                <a href="/TERMS.md" target="_blank" rel="noopener noreferrer">Terms</a>
+                <a href="/PRIVACY.md" target="_blank" rel="noopener noreferrer">Privacy</a>
+                <a href="/DISCLAIMER.md" target="_blank" rel="noopener noreferrer">Legal Disclaimer</a>
+            </div>
+            <p style="margin-top: 10px; font-size: 11px; color: #9CA3AF;">Nothing on this site is investment, legal, tax, or medical advice. Use of the app and protocol is subject to posted terms and policies.</p>
         </div>
     </div>
 
@@ -521,19 +637,140 @@
             return num;
         }
 
+        function parseCountFromResponse(response) {
+            const contentRange = response.headers.get('Content-Range');
+            if (!contentRange) return 0;
+
+            const total = contentRange.split('/')[1];
+            const parsed = Number.parseInt(total, 10);
+            return Number.isFinite(parsed) ? parsed : 0;
+        }
+
+        function maskWalletAddress(walletAddress = '') {
+            if (walletAddress.length <= 16) return walletAddress;
+            return `${walletAddress.slice(0, 16)}...`;
+        }
+
+        function createLeaderboardRow(miner, index) {
+            const row = document.createElement('div');
+            const topClass = index === 0 ? 'top-1' : index === 1 ? 'top-2' : index === 2 ? 'top-3' : '';
+            row.className = `leaderboard-row ${topClass}`.trim();
+
+            const rank = document.createElement('div');
+            const medal = index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : '';
+            rank.className = 'rank';
+            rank.textContent = `#${index + 1} ${medal}`.trim();
+
+            const wallet = document.createElement('div');
+            wallet.className = 'wallet';
+            wallet.textContent = maskWalletAddress(miner.wallet_address || 'Unknown wallet');
+
+            const hix = document.createElement('div');
+            hix.className = 'stat-col';
+            hix.textContent = Number(miner.total_hix || 0).toFixed(4);
+
+            const vectors = document.createElement('div');
+            vectors.className = 'stat-col';
+            vectors.textContent = Number(miner.total_vectors || 0).toLocaleString();
+
+            row.append(rank, wallet, hix, vectors);
+            return row;
+        }
+
+
+
+        const WALLET_STORAGE_KEY = 'hix-wallet-address';
+
+        function isLikelySolanaAddress(value) {
+            return /^[1-9A-HJ-NP-Za-km-z]{32,44}$/.test(value);
+        }
+
+        function shortenAddress(address = '') {
+            if (address.length < 12) return address;
+            return `${address.slice(0, 6)}...${address.slice(-6)}`;
+        }
+
+        function setWalletStatus(message, type = '') {
+            const walletStatus = document.getElementById('walletStatus');
+            walletStatus.textContent = message;
+            walletStatus.className = `wallet-status ${type}`.trim();
+        }
+
+        function saveWalletAddress(address) {
+            localStorage.setItem(WALLET_STORAGE_KEY, address);
+            setWalletStatus(`Wallet saved: ${shortenAddress(address)}`, 'success');
+        }
+
+        function initWalletHub() {
+            const walletInput = document.getElementById('walletAddressInput');
+            const saveWalletBtn = document.getElementById('saveWalletBtn');
+            const connectPhantomBtn = document.getElementById('connectPhantomBtn');
+            const storedAddress = localStorage.getItem(WALLET_STORAGE_KEY);
+
+            if (storedAddress) {
+                walletInput.value = storedAddress;
+                setWalletStatus(`Saved wallet: ${shortenAddress(storedAddress)}`, 'success');
+            }
+
+            saveWalletBtn.addEventListener('click', () => {
+                const address = walletInput.value.trim();
+
+                if (!address) {
+                    setWalletStatus('Please paste your wallet address first.', 'error');
+                    return;
+                }
+
+                if (!isLikelySolanaAddress(address)) {
+                    setWalletStatus('That does not look like a valid Solana wallet address.', 'error');
+                    return;
+                }
+
+                saveWalletAddress(address);
+            });
+
+            connectPhantomBtn.addEventListener('click', async () => {
+                try {
+                    if (!window.solana || !window.solana.isPhantom) {
+                        window.open('https://phantom.app/download', '_blank', 'noopener,noreferrer');
+                        setWalletStatus('Phantom extension not found. Opened install page.', 'error');
+                        return;
+                    }
+
+                    const response = await window.solana.connect();
+                    const publicKey = response?.publicKey?.toString?.() || '';
+
+                    if (!publicKey || !isLikelySolanaAddress(publicKey)) {
+                        setWalletStatus('Connected, but could not read a valid wallet address.', 'error');
+                        return;
+                    }
+
+                    walletInput.value = publicKey;
+                    saveWalletAddress(publicKey);
+                } catch (err) {
+                    const cancelled = (err && typeof err.message === 'string' && err.message.toLowerCase().includes('user rejected'));
+                    if (cancelled) {
+                        setWalletStatus('Wallet connection cancelled.', 'error');
+                    } else {
+                        setWalletStatus('Failed to connect Phantom. Please try again.', 'error');
+                    }
+                    console.error('Phantom connection error:', err);
+                }
+            });
+        }
+
         async function updateStats() {
             try {
                 // Get total vectors
                 const vectorsRes = await fetch(`${SUPABASE_URL}/rest/v1/mining_vectors?select=count`, {
                     headers: { 'apikey': SUPABASE_KEY, 'Range': '0-0' }
                 });
-                const totalVectors = parseInt(vectorsRes.headers.get('Content-Range').split('/')[1]);
+                const totalVectors = parseCountFromResponse(vectorsRes);
 
                 // Get active miners
                 const minersRes = await fetch(`${SUPABASE_URL}/rest/v1/leaderboard?select=count`, {
                     headers: { 'apikey': SUPABASE_KEY, 'Range': '0-0' }
                 });
-                const activeMiners = parseInt(minersRes.headers.get('Content-Range').split('/')[1]);
+                const activeMiners = parseCountFromResponse(minersRes);
 
                 // Calculate HIX
                 const totalHix = (totalVectors * 0.00075).toFixed(2);
@@ -564,22 +801,10 @@
                     return;
                 }
 
-                let html = '';
+                container.textContent = '';
                 leaders.forEach((miner, index) => {
-                    const topClass = index === 0 ? 'top-1' : index === 1 ? 'top-2' : index === 2 ? 'top-3' : '';
-                    const medal = index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : '';
-                    
-                    html += `
-                        <div class="leaderboard-row ${topClass}">
-                            <div class="rank">#${index + 1} ${medal}</div>
-                            <div class="wallet">${miner.wallet_address.substring(0, 16)}...</div>
-                            <div class="stat-col">${(miner.total_hix || 0).toFixed(4)}</div>
-                            <div class="stat-col">${(miner.total_vectors || 0).toLocaleString()}</div>
-                        </div>
-                    `;
+                    container.appendChild(createLeaderboardRow(miner, index));
                 });
-
-                container.innerHTML = html;
 
             } catch (err) {
                 console.error('Failed to fetch leaderboard:', err);
@@ -589,6 +814,7 @@
         }
 
         // Initial load
+        initWalletHub();
         updateStats();
         updateLeaderboard();
 
