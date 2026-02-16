@@ -1,0 +1,9 @@
+# HIX Node - Netlify config for https://hixai.netlify.app/
+[build]
+  publish = "."
+  command = ""
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
